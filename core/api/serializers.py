@@ -1,12 +1,18 @@
+from django.contrib.auth.models import User as AuthUser
 from rest_framework import serializers
 
 from .models import Following, Like, Retweet, TestModel, Tweet, User
 
 
-class TestModelSerializer(serializers.ModelSerializer):
+class AuthUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TestModel
-        fields = ["id", "name", "date"]
+        model = AuthUser
+        fields = ["id", "username", "password"]
+        extra_kwargs = {"password": {"write_only": True}}
+
+        def create(self, validated_data):
+            user = AuthUser.objects.create_user(**validated_data)
+            return user
 
 
 # --- User ---
@@ -39,12 +45,12 @@ class UserSerializer(serializers.ModelSerializer):
 # --- Tweet (con campos computados + nested ids) ---
 class TweetSerializer(serializers.ModelSerializer):
     user_id = serializers.PrimaryKeyRelatedField(
-        source="user", queryset=User.objects.all(), write_only=True
+        source="user",
+        queryset=User.objects.all(),
     )
     parentTweet_id = serializers.PrimaryKeyRelatedField(
         source="parentTweet",
         queryset=Tweet.objects.all(),
-        write_only=True,
         allow_null=True,
         required=False,
     )
@@ -59,7 +65,6 @@ class TweetSerializer(serializers.ModelSerializer):
             "id",
             "tweetContent",
             "tweetDate",
-            "tweetImage",
             "user_id",
             "parentTweet_id",
             "likes_count",

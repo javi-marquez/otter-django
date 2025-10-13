@@ -1,21 +1,23 @@
+from django.contrib.auth.models import User as AuthUser
 from django.db.models import Count
 from django.db.models.functions import Coalesce
 from rest_framework import generics, mixins, viewsets
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .models import Following, Like, Retweet, TestModel, Tweet, User
+from .models import Following, Like, Retweet, Tweet, User
 from .serializers import (
     FollowingSerializer,
     LikeSerializer,
     RetweetSerializer,
-    TestModelSerializer,
     TweetSerializer,
     UserSerializer,
 )
 
 
-class TestModelCreate(generics.ListCreateAPIView):
-    queryset = TestModel.objects.all()
-    serializer_class = TestModelSerializer
+class CreateUserView(generics.CreateAPIView):
+    queryset = AuthUser.objects.all()
+    serializer_class = AuthUser
+    permission_classes = [AllowAny]
 
 
 class UserViewSet(viewsets.ModelViewSet):

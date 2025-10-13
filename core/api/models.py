@@ -33,7 +33,6 @@ class Tweet(models.Model):
     )
     tweetContent = models.CharField(max_length=255)
     tweetDate = models.DateTimeField(auto_now_add=True)
-    tweetImage = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.userName}: {self.tweetContent[:30]}"

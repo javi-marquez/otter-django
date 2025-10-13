@@ -19,5 +19,4 @@ router.register(r"following", FollowingViewSet, basename="following")
 
 urlpatterns = [
     path("api/", include(router.urls)),
-    path("test/", views.TestModelCreate.as_view(), name="test-view-create"),
 ]
